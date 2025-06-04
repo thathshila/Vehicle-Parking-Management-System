@@ -9,6 +9,7 @@
         <module name="api-gateway" />
         <module name="eureka-service" />
         <module name="payment-service" />
+        <module name="user-service" />
         <module name="vehicle-service" />
         <module name="parking-space-service" />
       </profile>
@@ -20,6 +21,7 @@
       <module name="eureka-service" options="-parameters" />
       <module name="parking-space-service" options="-parameters" />
       <module name="payment-service" options="-parameters" />
+      <module name="user-service" options="-parameters" />
       <module name="vehicle-service" options="-parameters" />
     </option>
   </component>
