@@ -1,94 +1,73 @@
 package org.example.parkingspaceservice.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "parking_spaces")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class ParkingSpace {
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Space number is required")
+    @Column(unique = true)
     private String spaceNumber;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Location is required")
     private String location;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Zone is required")
     private String zone;
 
-    @Column(nullable = false)
+    @NotBlank(message = "City is required")
     private String city;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private SpaceStatus status;
+    private SpaceStatus status = SpaceStatus.AVAILABLE;
 
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SpaceType type;
+
+    @Positive(message = "Hourly rate must be positive")
     private Double hourlyRate;
 
     private String ownerId;
 
-    private String reservedBy;
+    private String currentVehicleId;
 
-    private LocalDateTime reservationTime;
+    private LocalDateTime occupiedSince;
 
-    private LocalDateTime lastUpdated;
+    private LocalDateTime createdAt;
 
-    // Constructors
-    public ParkingSpace() {
-        this.lastUpdated = LocalDateTime.now();
+    private LocalDateTime updatedAt;
+
+    public enum SpaceStatus {
+        AVAILABLE, OCCUPIED, RESERVED, MAINTENANCE
     }
 
-    public ParkingSpace(String spaceNumber, String location, String zone, String city,
-                        Double hourlyRate, String ownerId) {
-        this.spaceNumber = spaceNumber;
-        this.location = location;
-        this.zone = zone;
-        this.city = city;
-        this.hourlyRate = hourlyRate;
-        this.ownerId = ownerId;
-        this.status = SpaceStatus.AVAILABLE;
-        this.lastUpdated = LocalDateTime.now();
+    public enum SpaceType {
+        REGULAR, COMPACT, LARGE, HANDICAPPED, ELECTRIC
     }
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
-    public String getSpaceNumber() { return spaceNumber; }
-    public void setSpaceNumber(String spaceNumber) { this.spaceNumber = spaceNumber; }
-
-    public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
-
-    public String getZone() { return zone; }
-    public void setZone(String zone) { this.zone = zone; }
-
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
-
-    public SpaceStatus getStatus() { return status; }
-    public void setStatus(SpaceStatus status) {
-        this.status = status;
-        this.lastUpdated = LocalDateTime.now();
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
-    public Double getHourlyRate() { return hourlyRate; }
-    public void setHourlyRate(Double hourlyRate) { this.hourlyRate = hourlyRate; }
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
-    public String getOwnerId() { return ownerId; }
-    public void setOwnerId(String ownerId) { this.ownerId = ownerId; }
-
-    public String getReservedBy() { return reservedBy; }
-    public void setReservedBy(String reservedBy) { this.reservedBy = reservedBy; }
-
-    public LocalDateTime getReservationTime() { return reservationTime; }
-    public void setReservationTime(LocalDateTime reservationTime) { this.reservationTime = reservationTime; }
-
-    public LocalDateTime getLastUpdated() { return lastUpdated; }
-    public void setLastUpdated(LocalDateTime lastUpdated) { this.lastUpdated = lastUpdated; }
 }

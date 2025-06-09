@@ -2,7 +2,6 @@ package org.example.parkingspaceservice.repository;
 
 
 import org.example.parkingspaceservice.model.ParkingSpace;
-import org.example.parkingspaceservice.model.SpaceStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, Long> {
 
-    List<ParkingSpace> findByStatus(SpaceStatus status);
+    List<ParkingSpace> findByStatus(ParkingSpace.SpaceStatus status);
 
     List<ParkingSpace> findByCity(String city);
 
@@ -22,14 +21,24 @@ public interface ParkingSpaceRepository extends JpaRepository<ParkingSpace, Long
 
     List<ParkingSpace> findByOwnerId(String ownerId);
 
-    List<ParkingSpace> findByCityAndStatus(String city, SpaceStatus status);
+    List<ParkingSpace> findByCityAndZone(String city, String zone);
 
-    List<ParkingSpace> findByZoneAndStatus(String zone, SpaceStatus status);
+    List<ParkingSpace> findByStatusAndCity(ParkingSpace.SpaceStatus status, String city);
+
+    List<ParkingSpace> findByStatusAndZone(ParkingSpace.SpaceStatus status, String zone);
+
+    List<ParkingSpace> findByType(ParkingSpace.SpaceType type);
 
     Optional<ParkingSpace> findBySpaceNumber(String spaceNumber);
 
-    @Query("SELECT p FROM ParkingSpace p WHERE p.city = :city AND p.zone = :zone AND p.status = :status")
-    List<ParkingSpace> findAvailableSpacesByCityAndZone(@Param("city") String city,
-                                                        @Param("zone") String zone,
-                                                        @Param("status") SpaceStatus status);
+    Optional<ParkingSpace> findByCurrentVehicleId(String vehicleId);
+
+    @Query("SELECT COUNT(p) FROM ParkingSpace p WHERE p.city = :city AND p.status = :status")
+    Long countByStatusAndCity(@Param("status") ParkingSpace.SpaceStatus status, @Param("city") String city);
+
+    @Query("SELECT COUNT(p) FROM ParkingSpace p WHERE p.zone = :zone AND p.status = :status")
+    Long countByStatusAndZone(@Param("status") ParkingSpace.SpaceStatus status, @Param("zone") String zone);
+
+    @Query("SELECT COUNT(p) FROM ParkingSpace p WHERE p.ownerId = :ownerId AND p.status = :status")
+    Long countByStatusAndOwnerId(@Param("status") ParkingSpace.SpaceStatus status, @Param("ownerId") String ownerId);
 }
