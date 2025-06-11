@@ -53,18 +53,27 @@ public class Vehicle {
 
     private LocalDateTime updatedAt;
 
+    // Soft delete field
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
+
+    private LocalDateTime deletedAt;
+
     public enum VehicleType {
         CAR, MOTORCYCLE, TRUCK, VAN, SUV, ELECTRIC_CAR
     }
 
     public enum VehicleStatus {
-        PARKED_OUTSIDE, PARKED_IN_SPACE, IN_TRANSIT, RESERVED_SPACE
+        PARKED_OUTSIDE, PARKED_IN_SPACE, IN_TRANSIT, RESERVED_SPACE, DELETED
     }
 
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
+        if (isDeleted == null) {
+            isDeleted = false;
+        }
     }
 
     @PreUpdate
@@ -72,4 +81,19 @@ public class Vehicle {
         updatedAt = LocalDateTime.now();
     }
 
+    // Helper method for soft delete
+    public void markAsDeleted() {
+        this.isDeleted = true;
+        this.status = VehicleStatus.DELETED;
+        this.deletedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    // Helper method to restore deleted vehicle
+    public void restore() {
+        this.isDeleted = false;
+        this.status = VehicleStatus.PARKED_OUTSIDE;
+        this.deletedAt = null;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

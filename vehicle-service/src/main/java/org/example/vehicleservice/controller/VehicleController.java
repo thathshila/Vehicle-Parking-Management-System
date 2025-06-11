@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 import java.util.Map;
 
@@ -20,15 +19,38 @@ public class VehicleController {
     @Autowired
     private VehicleService vehicleService;
 
+    // Get all active (non-deleted) vehicles
     @GetMapping
     public ResponseEntity<List<Vehicle>> getAllVehicles() {
         List<Vehicle> vehicles = vehicleService.getAllVehicles();
         return ResponseEntity.ok(vehicles);
     }
 
+    // Get all vehicles including deleted ones
+    @GetMapping("/all")
+    public ResponseEntity<List<Vehicle>> getAllVehiclesIncludingDeleted() {
+        List<Vehicle> vehicles = vehicleService.getAllVehiclesIncludingDeleted();
+        return ResponseEntity.ok(vehicles);
+    }
+
+    // Get all deleted vehicles
+    @GetMapping("/deleted")
+    public ResponseEntity<List<Vehicle>> getAllDeletedVehicles() {
+        List<Vehicle> vehicles = vehicleService.getAllDeletedVehicles();
+        return ResponseEntity.ok(vehicles);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) {
         return vehicleService.getVehicleById(id)
+                .map(vehicle -> ResponseEntity.ok(vehicle))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Get vehicle by ID including deleted ones
+    @GetMapping("/{id}/with-deleted")
+    public ResponseEntity<Vehicle> getVehicleByIdIncludingDeleted(@PathVariable Long id) {
+        return vehicleService.getVehicleByIdIncludingDeleted(id)
                 .map(vehicle -> ResponseEntity.ok(vehicle))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -43,6 +65,13 @@ public class VehicleController {
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<List<Vehicle>> getVehiclesByOwner(@PathVariable String ownerId) {
         List<Vehicle> vehicles = vehicleService.getVehiclesByOwner(ownerId);
+        return ResponseEntity.ok(vehicles);
+    }
+
+    // Get vehicles by owner including deleted ones
+    @GetMapping("/owner/{ownerId}/all")
+    public ResponseEntity<List<Vehicle>> getVehiclesByOwnerIncludingDeleted(@PathVariable String ownerId) {
+        List<Vehicle> vehicles = vehicleService.getVehiclesByOwnerIncludingDeleted(ownerId);
         return ResponseEntity.ok(vehicles);
     }
 
@@ -113,12 +142,35 @@ public class VehicleController {
         }
     }
 
+    // Soft delete - marks vehicle as deleted
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVehicle(@PathVariable Long id) {
         try {
             vehicleService.deleteVehicle(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Hard delete - permanently removes from database
+    @DeleteMapping("/{id}/hard")
+    public ResponseEntity<Void> hardDeleteVehicle(@PathVariable Long id) {
+        try {
+            vehicleService.hardDeleteVehicle(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Restore deleted vehicle
+    @PutMapping("/{id}/restore")
+    public ResponseEntity<Vehicle> restoreVehicle(@PathVariable Long id) {
+        try {
+            Vehicle restoredVehicle = vehicleService.restoreVehicle(id);
+            return ResponseEntity.ok(restoredVehicle);
+        } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }
     }

@@ -1,6 +1,5 @@
 package org.example.vehicleservice.repository;
 
-
 import org.example.vehicleservice.entity.Vehicle;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,27 +9,46 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
-    Optional<Vehicle> findByLicensePlate(String licensePlate);
+    // Find all non-deleted vehicles
+    List<Vehicle> findByIsDeletedFalse();
 
-    List<Vehicle> findByOwnerId(String ownerId);
+    // Find all deleted vehicles
+    List<Vehicle> findByIsDeletedTrue();
 
-    List<Vehicle> findByStatus(Vehicle.VehicleStatus status);
+    // Find by ID (non-deleted only)
+    Optional<Vehicle> findByIdAndIsDeletedFalse(Long id);
 
-    List<Vehicle> findByType(Vehicle.VehicleType type);
+    // Find by license plate (non-deleted only)
+    Optional<Vehicle> findByLicensePlateAndIsDeletedFalse(String licensePlate);
 
-    List<Vehicle> findByMake(String make);
+    // Find by owner ID (non-deleted only)
+    List<Vehicle> findByOwnerIdAndIsDeletedFalse(String ownerId);
 
-    List<Vehicle> findByMakeAndModel(String make, String model);
+    // Find by status (non-deleted only)
+    List<Vehicle> findByStatusAndIsDeletedFalse(Vehicle.VehicleStatus status);
 
-    Optional<Vehicle> findByCurrentParkingSpaceId(String parkingSpaceId);
+    // Find by type (non-deleted only)
+    List<Vehicle> findByTypeAndIsDeletedFalse(Vehicle.VehicleType type);
 
-    @Query("SELECT COUNT(v) FROM Vehicle v WHERE v.ownerId = :ownerId AND v.status = :status")
-    Long countByOwnerIdAndStatus(@Param("ownerId") String ownerId, @Param("status") Vehicle.VehicleStatus status);
+    // Find by current parking space (non-deleted only)
+    Optional<Vehicle> findByCurrentParkingSpaceIdAndIsDeletedFalse(String parkingSpaceId);
 
-    @Query("SELECT v FROM Vehicle v WHERE v.ownerId = :ownerId AND v.status IN :statuses")
-    List<Vehicle> findByOwnerIdAndStatusIn(@Param("ownerId") String ownerId, @Param("statuses") List<Vehicle.VehicleStatus> statuses);
+    // Find parked vehicles by owner (non-deleted only)
+    List<Vehicle> findByOwnerIdAndStatusInAndIsDeletedFalse(String ownerId, List<Vehicle.VehicleStatus> statuses);
+
+    // Count parked vehicles by owner (non-deleted only)
+    Long countByOwnerIdAndStatusAndIsDeletedFalse(String ownerId, Vehicle.VehicleStatus status);
+
+    // Custom query to find vehicles by owner including deleted status
+    @Query("SELECT v FROM Vehicle v WHERE v.ownerId = :ownerId")
+    List<Vehicle> findAllByOwnerIdIncludingDeleted(@Param("ownerId") String ownerId);
+
+    // Check if license plate exists (excluding deleted)
+    boolean existsByLicensePlateAndIsDeletedFalse(String licensePlate);
+
+    // Check if license plate exists (including deleted)
+    boolean existsByLicensePlate(String licensePlate);
 }
