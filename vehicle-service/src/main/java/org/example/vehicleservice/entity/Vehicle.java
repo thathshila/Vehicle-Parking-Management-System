@@ -53,7 +53,6 @@ public class Vehicle {
 
     private LocalDateTime updatedAt;
 
-    // Soft delete field
     @Column(name = "is_deleted")
     private Boolean isDeleted = false;
 
@@ -81,7 +80,6 @@ public class Vehicle {
         updatedAt = LocalDateTime.now();
     }
 
-    // Helper method for soft delete
     public void markAsDeleted() {
         this.isDeleted = true;
         this.status = VehicleStatus.DELETED;
@@ -89,7 +87,6 @@ public class Vehicle {
         this.updatedAt = LocalDateTime.now();
     }
 
-    // Helper method to restore deleted vehicle
     public void restore() {
         this.isDeleted = false;
         this.status = VehicleStatus.PARKED_OUTSIDE;
