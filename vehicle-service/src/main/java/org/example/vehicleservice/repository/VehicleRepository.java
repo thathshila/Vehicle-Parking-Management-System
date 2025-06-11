@@ -12,19 +12,14 @@ import java.util.Optional;
 @Repository
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
-    // Find all non-deleted vehicles
     List<Vehicle> findByIsDeletedFalse();
 
-    // Find all deleted vehicles
     List<Vehicle> findByIsDeletedTrue();
 
-    // Find by ID (non-deleted only)
     Optional<Vehicle> findByIdAndIsDeletedFalse(Long id);
 
-    // Find by license plate (non-deleted only)
     Optional<Vehicle> findByLicensePlateAndIsDeletedFalse(String licensePlate);
 
-    // Find by owner ID (non-deleted only)
     List<Vehicle> findByOwnerIdAndIsDeletedFalse(String ownerId);
 
     // Find by status (non-deleted only)

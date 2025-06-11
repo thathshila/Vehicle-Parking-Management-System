@@ -104,6 +104,7 @@ public class VehicleController {
         }
     }
 
+    //entry done
     @PostMapping("/{id}/entry")
     public ResponseEntity<Vehicle> simulateEntry(@PathVariable Long id,
                                                  @RequestBody Map<String, String> request) {
@@ -116,6 +117,7 @@ public class VehicleController {
         }
     }
 
+    //exit done
     @PostMapping("/{id}/exit")
     public ResponseEntity<Vehicle> simulateExit(@PathVariable Long id) {
         try {

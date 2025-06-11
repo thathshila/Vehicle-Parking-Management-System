@@ -17,12 +17,10 @@ public class VehicleService {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    // Get all non-deleted vehicles
     public List<Vehicle> getAllVehicles() {
         return vehicleRepository.findByIsDeletedFalse();
     }
 
-    // Get all vehicles including deleted ones
     public List<Vehicle> getAllVehiclesIncludingDeleted() {
         return vehicleRepository.findAll();
     }
