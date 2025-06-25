@@ -19,13 +19,7 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     List<Payment> findByUserId(String userId);
 
-    List<Payment> findByBookingId(String bookingId);
-
     List<Payment> findByStatus(Payment.PaymentStatus status);
-
-    List<Payment> findByPaymentMethod(Payment.PaymentMethod paymentMethod);
-
-    List<Payment> findByUserIdAndStatus(String userId, Payment.PaymentStatus status);
 
     @Query("SELECT p FROM Payment p WHERE p.paymentTime BETWEEN :startDate AND :endDate")
     List<Payment> findByPaymentTimeBetween(@Param("startDate") LocalDateTime startDate,

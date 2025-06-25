@@ -46,7 +46,6 @@ public class Receipt {
 
     private Double hourlyRate;
 
-    // Fix: Use TEXT or LONGTEXT for large receipt data
     @Column(columnDefinition = "TEXT")
     private String receiptData;
 

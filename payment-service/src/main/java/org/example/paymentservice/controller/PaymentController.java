@@ -99,14 +99,6 @@ public class PaymentController {
         }
     }
 
-    @GetMapping("/date-range")
-    public ResponseEntity<List<Payment>> getPaymentsByDateRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-        List<Payment> payments = paymentService.getPaymentsByDateRange(startDate, endDate);
-        return ResponseEntity.ok(payments);
-    }
-
     @GetMapping("/revenue/total")
     public ResponseEntity<Map<String, Double>> getTotalRevenue() {
         Double totalRevenue = paymentService.getTotalRevenue();
