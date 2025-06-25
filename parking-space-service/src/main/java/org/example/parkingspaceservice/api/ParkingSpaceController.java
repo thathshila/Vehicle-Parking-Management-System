@@ -19,14 +19,12 @@ public class ParkingSpaceController {
     @Autowired
     private ParkingSpaceService parkingSpaceService;
 
-    //all
     @GetMapping("/spaces")
     public ResponseEntity<List<ParkingSpace>> getAllParkingSpaces() {
         List<ParkingSpace> spaces = parkingSpaceService.getAllParkingSpaces();
         return ResponseEntity.ok(spaces);
     }
 
-    //by id
     @GetMapping("/spaces/{id}")
     public ResponseEntity<ParkingSpace> getParkingSpaceById(@PathVariable Long id) {
         return parkingSpaceService.getParkingSpaceById(id)
