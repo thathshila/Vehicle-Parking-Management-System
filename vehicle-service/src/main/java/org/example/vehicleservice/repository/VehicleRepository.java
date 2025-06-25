@@ -22,28 +22,18 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     List<Vehicle> findByOwnerIdAndIsDeletedFalse(String ownerId);
 
-    // Find by status (non-deleted only)
     List<Vehicle> findByStatusAndIsDeletedFalse(Vehicle.VehicleStatus status);
 
-    // Find by type (non-deleted only)
     List<Vehicle> findByTypeAndIsDeletedFalse(Vehicle.VehicleType type);
 
-    // Find by current parking space (non-deleted only)
     Optional<Vehicle> findByCurrentParkingSpaceIdAndIsDeletedFalse(String parkingSpaceId);
 
-    // Find parked vehicles by owner (non-deleted only)
     List<Vehicle> findByOwnerIdAndStatusInAndIsDeletedFalse(String ownerId, List<Vehicle.VehicleStatus> statuses);
 
-    // Count parked vehicles by owner (non-deleted only)
     Long countByOwnerIdAndStatusAndIsDeletedFalse(String ownerId, Vehicle.VehicleStatus status);
 
-    // Custom query to find vehicles by owner including deleted status
     @Query("SELECT v FROM Vehicle v WHERE v.ownerId = :ownerId")
     List<Vehicle> findAllByOwnerIdIncludingDeleted(@Param("ownerId") String ownerId);
 
-    // Check if license plate exists (excluding deleted)
-    boolean existsByLicensePlateAndIsDeletedFalse(String licensePlate);
-
-    // Check if license plate exists (including deleted)
     boolean existsByLicensePlate(String licensePlate);
 }

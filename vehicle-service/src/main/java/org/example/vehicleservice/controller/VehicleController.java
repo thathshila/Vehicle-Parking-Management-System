@@ -25,29 +25,9 @@ public class VehicleController {
         return ResponseEntity.ok(vehicles);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Vehicle>> getAllVehiclesIncludingDeleted() {
-        List<Vehicle> vehicles = vehicleService.getAllVehiclesIncludingDeleted();
-        return ResponseEntity.ok(vehicles);
-    }
-
-
-    @GetMapping("/deleted")
-    public ResponseEntity<List<Vehicle>> getAllDeletedVehicles() {
-        List<Vehicle> vehicles = vehicleService.getAllDeletedVehicles();
-        return ResponseEntity.ok(vehicles);
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<Vehicle> getVehicleById(@PathVariable Long id) {
         return vehicleService.getVehicleById(id)
-                .map(vehicle -> ResponseEntity.ok(vehicle))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/{id}/with-deleted")
-    public ResponseEntity<Vehicle> getVehicleByIdIncludingDeleted(@PathVariable Long id) {
-        return vehicleService.getVehicleByIdIncludingDeleted(id)
                 .map(vehicle -> ResponseEntity.ok(vehicle))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -62,18 +42,6 @@ public class VehicleController {
     @GetMapping("/owner/{ownerId}")
     public ResponseEntity<List<Vehicle>> getVehiclesByOwner(@PathVariable String ownerId) {
         List<Vehicle> vehicles = vehicleService.getVehiclesByOwner(ownerId);
-        return ResponseEntity.ok(vehicles);
-    }
-
-    @GetMapping("/owner/{ownerId}/all")
-    public ResponseEntity<List<Vehicle>> getVehiclesByOwnerIncludingDeleted(@PathVariable String ownerId) {
-        List<Vehicle> vehicles = vehicleService.getVehiclesByOwnerIncludingDeleted(ownerId);
-        return ResponseEntity.ok(vehicles);
-    }
-
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<Vehicle>> getVehiclesByStatus(@PathVariable Vehicle.VehicleStatus status) {
-        List<Vehicle> vehicles = vehicleService.getVehiclesByStatus(status);
         return ResponseEntity.ok(vehicles);
     }
 
@@ -104,7 +72,7 @@ public class VehicleController {
         }
     }
 
-    //entry done
+
     @PostMapping("/{id}/entry")
     public ResponseEntity<Vehicle> simulateEntry(@PathVariable Long id,
                                                  @RequestBody Map<String, String> request) {
@@ -117,7 +85,7 @@ public class VehicleController {
         }
     }
 
-    //exit done
+
     @PostMapping("/{id}/exit")
     public ResponseEntity<Vehicle> simulateExit(@PathVariable Long id) {
         try {
@@ -150,50 +118,10 @@ public class VehicleController {
         }
     }
 
-    @DeleteMapping("/{id}/hard")
-    public ResponseEntity<Void> hardDeleteVehicle(@PathVariable Long id) {
-        try {
-            vehicleService.hardDeleteVehicle(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/{id}/restore")
-    public ResponseEntity<Vehicle> restoreVehicle(@PathVariable Long id) {
-        try {
-            Vehicle restoredVehicle = vehicleService.restoreVehicle(id);
-            return ResponseEntity.ok(restoredVehicle);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @GetMapping("/parking-space/{parkingSpaceId}")
     public ResponseEntity<Vehicle> findVehicleInParkingSpace(@PathVariable String parkingSpaceId) {
         return vehicleService.findVehicleInParkingSpace(parkingSpaceId)
                 .map(vehicle -> ResponseEntity.ok(vehicle))
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/owner/{ownerId}/parked")
-    public ResponseEntity<List<Vehicle>> getParkedVehiclesByOwner(@PathVariable String ownerId) {
-        List<Vehicle> vehicles = vehicleService.getParkedVehiclesByOwner(ownerId);
-        return ResponseEntity.ok(vehicles);
-    }
-
-    @GetMapping("/owner/{ownerId}/stats")
-    public ResponseEntity<Map<String, Long>> getOwnerVehicleStats(@PathVariable String ownerId) {
-        Long parkedCount = vehicleService.getParkedVehicleCount(ownerId);
-        Long totalCount = (long) vehicleService.getVehiclesByOwner(ownerId).size();
-
-        Map<String, Long> stats = Map.of(
-                "parked", parkedCount,
-                "total", totalCount,
-                "available", totalCount - parkedCount
-        );
-
-        return ResponseEntity.ok(stats);
     }
 }
