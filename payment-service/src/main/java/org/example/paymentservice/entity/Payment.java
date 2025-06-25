@@ -42,7 +42,7 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentStatus status = PaymentStatus.PENDING;
 
-    private String cardNumber; // Last 4 digits only for security
+    private String cardNumber;
 
     private String cardHolderName;
 

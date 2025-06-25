@@ -99,4 +99,13 @@ public class ReceiptService {
 
         return content.toString();
     }
+
+    // Service Implementation
+    public List<Receipt> getReceiptsByVehicle(String vehicleId) {
+        return receiptRepository.findByVehicleId(vehicleId);
+    }
+
+    public List<Receipt> getReceiptsByParkingSpace(String parkingSpaceId) {
+        return receiptRepository.findByParkingSpaceId(parkingSpaceId);
+    }
 }

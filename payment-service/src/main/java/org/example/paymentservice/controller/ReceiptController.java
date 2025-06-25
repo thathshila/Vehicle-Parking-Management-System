@@ -53,17 +53,17 @@ public class ReceiptController {
         return ResponseEntity.ok(receipts);
     }
 
-//    @GetMapping("/vehicle/{vehicleId}")
-//    public ResponseEntity<List<Receipt>> getReceiptsByVehicle(@PathVariable String vehicleId) {
-//        List<Receipt> receipts = receiptService.getReceiptsByVehicle(vehicleId);
-//        return ResponseEntity.ok(receipts);
-//    }
-//
-//    @GetMapping("/parking-space/{parkingSpaceId}")
-//    public ResponseEntity<List<Receipt>> getReceiptsByParkingSpace(@PathVariable String parkingSpaceId) {
-//        List<Receipt> receipts = receiptService.getReceiptsByParkingSpace(parkingSpaceId);
-//        return ResponseEntity.ok(receipts);
-//    }
+    @GetMapping("/vehicle/{vehicleId}")
+    public ResponseEntity<List<Receipt>> getReceiptsByVehicle(@PathVariable String vehicleId) {
+        List<Receipt> receipts = receiptService.getReceiptsByVehicle(vehicleId);
+        return ResponseEntity.ok(receipts);
+    }
+
+    @GetMapping("/parking-space/{parkingSpaceId}")
+    public ResponseEntity<List<Receipt>> getReceiptsByParkingSpace(@PathVariable String parkingSpaceId) {
+        List<Receipt> receipts = receiptService.getReceiptsByParkingSpace(parkingSpaceId);
+        return ResponseEntity.ok(receipts);
+    }
 
     @PostMapping("/generate")
     public ResponseEntity<Receipt> generateReceipt(@RequestBody Map<String, Object> receiptRequest) {
@@ -94,67 +94,67 @@ public class ReceiptController {
         }
     }
 
-    @GetMapping("/date-range")
-    public ResponseEntity<List<Receipt>> getReceiptsByDateRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-
-        List<Receipt> receipts = receiptService.getReceiptsByDateRange(startDate, endDate);
-        return ResponseEntity.ok(receipts);
-    }
-
-    @GetMapping("/user/{userId}/date-range")
-    public ResponseEntity<List<Receipt>> getUserReceiptsByDateRange(
-            @PathVariable String userId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-
-        List<Receipt> receipts = receiptService.getUserReceiptsByDateRange(userId, startDate, endDate);
-        return ResponseEntity.ok(receipts);
-    }
-
-    @GetMapping("/{id}/download")
-    public ResponseEntity<String> downloadReceipt(@PathVariable Long id) {
-        return receiptService.getReceiptById(id)
-                .map(receipt -> ResponseEntity.ok()
-                        .header("Content-Type", "text/plain")
-                        .header("Content-Disposition", "attachment; filename=receipt_" + receipt.getReceiptNumber() + ".txt")
-                        .body(receipt.getReceiptData()))
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/stats/total-revenue")
-    public ResponseEntity<Map<String, Object>> getTotalRevenue() {
-        List<Receipt> allReceipts = receiptService.getAllReceipts();
-        double totalRevenue = allReceipts.stream()
-                .mapToDouble(Receipt::getTotalAmount)
-                .sum();
-
-        Map<String, Object> stats = Map.of(
-                "totalReceipts", allReceipts.size(),
-                "totalRevenue", totalRevenue
-        );
-
-        return ResponseEntity.ok(stats);
-    }
-
-    @GetMapping("/stats/user/{userId}")
-    public ResponseEntity<Map<String, Object>> getUserStats(@PathVariable String userId) {
-        List<Receipt> userReceipts = receiptService.getReceiptsByUser(userId);
-        double totalSpent = userReceipts.stream()
-                .mapToDouble(Receipt::getTotalAmount)
-                .sum();
-
-        long totalParkingMinutes = userReceipts.stream()
-                .mapToLong(receipt -> receipt.getParkingDurationMinutes() != null ? receipt.getParkingDurationMinutes() : 0)
-                .sum();
-
-        Map<String, Object> stats = Map.of(
-                "totalReceipts", userReceipts.size(),
-                "totalSpent", totalSpent,
-                "totalParkingHours", totalParkingMinutes / 60.0
-        );
-
-        return ResponseEntity.ok(stats);
-    }
+//    @GetMapping("/date-range")
+//    public ResponseEntity<List<Receipt>> getReceiptsByDateRange(
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+//
+//        List<Receipt> receipts = receiptService.getReceiptsByDateRange(startDate, endDate);
+//        return ResponseEntity.ok(receipts);
+//    }
+//
+//    @GetMapping("/user/{userId}/date-range")
+//    public ResponseEntity<List<Receipt>> getUserReceiptsByDateRange(
+//            @PathVariable String userId,
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+//            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+//
+//        List<Receipt> receipts = receiptService.getUserReceiptsByDateRange(userId, startDate, endDate);
+//        return ResponseEntity.ok(receipts);
+//    }
+//
+//    @GetMapping("/{id}/download")
+//    public ResponseEntity<String> downloadReceipt(@PathVariable Long id) {
+//        return receiptService.getReceiptById(id)
+//                .map(receipt -> ResponseEntity.ok()
+//                        .header("Content-Type", "text/plain")
+//                        .header("Content-Disposition", "attachment; filename=receipt_" + receipt.getReceiptNumber() + ".txt")
+//                        .body(receipt.getReceiptData()))
+//                .orElse(ResponseEntity.notFound().build());
+//    }
+//
+//    @GetMapping("/stats/total-revenue")
+//    public ResponseEntity<Map<String, Object>> getTotalRevenue() {
+//        List<Receipt> allReceipts = receiptService.getAllReceipts();
+//        double totalRevenue = allReceipts.stream()
+//                .mapToDouble(Receipt::getTotalAmount)
+//                .sum();
+//
+//        Map<String, Object> stats = Map.of(
+//                "totalReceipts", allReceipts.size(),
+//                "totalRevenue", totalRevenue
+//        );
+//
+//        return ResponseEntity.ok(stats);
+//    }
+//
+//    @GetMapping("/stats/user/{userId}")
+//    public ResponseEntity<Map<String, Object>> getUserStats(@PathVariable String userId) {
+//        List<Receipt> userReceipts = receiptService.getReceiptsByUser(userId);
+//        double totalSpent = userReceipts.stream()
+//                .mapToDouble(Receipt::getTotalAmount)
+//                .sum();
+//
+//        long totalParkingMinutes = userReceipts.stream()
+//                .mapToLong(receipt -> receipt.getParkingDurationMinutes() != null ? receipt.getParkingDurationMinutes() : 0)
+//                .sum();
+//
+//        Map<String, Object> stats = Map.of(
+//                "totalReceipts", userReceipts.size(),
+//                "totalSpent", totalSpent,
+//                "totalParkingHours", totalParkingMinutes / 60.0
+//        );
+//
+//        return ResponseEntity.ok(stats);
+//    }
 }

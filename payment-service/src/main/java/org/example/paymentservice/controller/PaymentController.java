@@ -144,7 +144,6 @@ public class PaymentController {
             String expiryDate = paymentData.get("expiryDate");
             String cvv = paymentData.get("cvv");
 
-            // Create a dummy payment for validation
             Payment payment = new Payment();
             paymentService.validateMockPayment(payment, cardNumber, expiryDate, cvv);
 

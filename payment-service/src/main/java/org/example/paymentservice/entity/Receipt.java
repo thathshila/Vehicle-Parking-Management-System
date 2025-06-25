@@ -17,15 +17,19 @@ public class Receipt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 50)
     private String receiptNumber;
 
+    @Column(length = 100)
     private String paymentId;
 
+    @Column(length = 100)
     private String userId;
 
+    @Column(length = 100)
     private String parkingSpaceId;
 
+    @Column(length = 100)
     private String vehicleId;
 
     private Double amount;
@@ -42,12 +46,20 @@ public class Receipt {
 
     private Double hourlyRate;
 
-    private String receiptData; // JSON or formatted receipt content
+    // Fix: Use TEXT or LONGTEXT for large receipt data
+    @Column(columnDefinition = "TEXT")
+    private String receiptData;
 
     private LocalDateTime generatedAt;
 
     public Receipt(String paymentId, String userId, String parkingSpaceId, String vehicleId, Double amount, LocalDateTime startTime, LocalDateTime endTime) {
-
+        this.paymentId = paymentId;
+        this.userId = userId;
+        this.parkingSpaceId = parkingSpaceId;
+        this.vehicleId = vehicleId;
+        this.amount = amount;
+        this.parkingStartTime = startTime;
+        this.parkingEndTime = endTime;
     }
 
     @PrePersist
@@ -61,6 +73,4 @@ public class Receipt {
     private String generateReceiptNumber() {
         return "RCP" + System.currentTimeMillis() + (int) (Math.random() * 1000);
     }
-
 }
-
