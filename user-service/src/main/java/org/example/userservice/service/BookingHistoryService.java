@@ -42,10 +42,6 @@ public class BookingHistoryService {
         return bookingHistoryRepository.findByStatus(BookingHistory.BookingStatus.ACTIVE);
     }
 
-    public List<BookingHistory> getUserBookingsByDateRange(String userId, LocalDateTime startDate, LocalDateTime endDate) {
-        return bookingHistoryRepository.findByUserIdAndDateRange(userId, startDate, endDate);
-    }
-
     public BookingHistory createBooking(BookingHistory booking) {
         return bookingHistoryRepository.save(booking);
     }

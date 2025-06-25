@@ -23,8 +23,6 @@ public interface BookingHistoryRepository extends JpaRepository<BookingHistory, 
 
     List<BookingHistory> findByStatus(BookingHistory.BookingStatus status);
 
-    List<BookingHistory> findByUserIdAndStatus(String userId, BookingHistory.BookingStatus status);
-
     @Query("SELECT b FROM BookingHistory b WHERE b.userId = :userId AND b.bookingTime BETWEEN :startDate AND :endDate")
     List<BookingHistory> findByUserIdAndDateRange(@Param("userId") String userId,
                                                   @Param("startDate") LocalDateTime startDate,

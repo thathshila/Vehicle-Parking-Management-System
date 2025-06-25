@@ -60,15 +60,6 @@ public class BookingHistoryController {
         return ResponseEntity.ok(bookings);
     }
 
-    @GetMapping("/user/{userId}/date-range")
-    public ResponseEntity<List<BookingHistory>> getUserBookingsByDateRange(
-            @PathVariable String userId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-        List<BookingHistory> bookings = bookingHistoryService.getUserBookingsByDateRange(userId, startDate, endDate);
-        return ResponseEntity.ok(bookings);
-    }
-
     @PostMapping
     public ResponseEntity<BookingHistory> createBooking(@Validated @RequestBody BookingHistory booking) {
         try {
