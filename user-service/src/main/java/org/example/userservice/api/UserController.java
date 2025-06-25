@@ -20,21 +20,18 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // Get all active users (default behavior)
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 
-    // Get all users including deleted ones (admin only)
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUsersIncludingDeleted() {
         List<User> users = userService.getAllUsersIncludingDeleted();
         return ResponseEntity.ok(users);
     }
 
-    // Get deleted users only
     @GetMapping("/deleted")
     public ResponseEntity<List<User>> getDeletedUsers() {
         List<User> users = userService.getDeletedUsers();
@@ -48,7 +45,6 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Get user by ID including deleted (admin only)
     @GetMapping("/{id}/full")
     public ResponseEntity<User> getUserByIdIncludingDeleted(@PathVariable Long id) {
         return userService.getUserByIdIncludingDeleted(id)
@@ -88,14 +84,12 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    // New endpoint for status filtering
     @GetMapping("/status/{status}")
     public ResponseEntity<List<User>> getUsersByStatus(@PathVariable User.UserStatus status) {
         List<User> users = userService.getUsersByStatus(status);
         return ResponseEntity.ok(users);
     }
 
-    // Get users by status and role
     @GetMapping("/status/{status}/role/{role}")
     public ResponseEntity<List<User>> getUsersByStatusAndRole(
             @PathVariable User.UserStatus status,
@@ -168,7 +162,6 @@ public class UserController {
         }
     }
 
-    // Soft delete user
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, String>> deleteUser(@PathVariable Long id) {
         try {
@@ -184,7 +177,6 @@ public class UserController {
         }
     }
 
-    // Restore deleted user
     @PostMapping("/{id}/restore")
     public ResponseEntity<User> restoreUser(@PathVariable Long id) {
         try {
@@ -195,7 +187,6 @@ public class UserController {
         }
     }
 
-    // Permanently delete user (admin only)
     @DeleteMapping("/{id}/permanent")
     public ResponseEntity<Map<String, String>> permanentlyDeleteUser(@PathVariable Long id) {
         try {
@@ -223,7 +214,6 @@ public class UserController {
         return ResponseEntity.ok(stats);
     }
 
-    // New statistics endpoints
     @GetMapping("/stats/total")
     public ResponseEntity<Map<String, Long>> getTotalUserStats() {
         Long activeUsers = userService.getTotalActiveUsers();

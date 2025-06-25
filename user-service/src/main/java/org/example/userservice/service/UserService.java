@@ -21,17 +21,14 @@ public class UserService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    // Get all active users (excluding deleted ones)
     public List<User> getAllUsers() {
         return userRepository.findAllActive();
     }
 
-    // Get all users including deleted ones (for admin purposes)
     public List<User> getAllUsersIncludingDeleted() {
         return userRepository.findAll();
     }
 
-    // Get deleted users only
     public List<User> getDeletedUsers() {
         return userRepository.findAllDeleted();
     }
@@ -40,7 +37,6 @@ public class UserService {
         return userRepository.findActiveById(id);
     }
 
-    // Get user by ID including deleted (for admin purposes)
     public Optional<User> getUserByIdIncludingDeleted(Long id) {
         return userRepository.findById(id);
     }
@@ -81,7 +77,6 @@ public class UserService {
     public User updateUser(Long id, User userDetails) {
         return userRepository.findActiveById(id)
                 .map(user -> {
-                    // Check if trying to update deleted user
                     if (user.isDeleted()) {
                         throw new RuntimeException("Cannot update deleted user");
                     }
@@ -94,7 +89,6 @@ public class UserService {
                     user.setState(userDetails.getState());
                     user.setZipCode(userDetails.getZipCode());
 
-                    // Update status if provided
                     if (userDetails.getStatus() != null && userDetails.getStatus() != User.UserStatus.DELETED) {
                         user.setStatus(userDetails.getStatus());
                     }
@@ -158,7 +152,6 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
-    // Soft delete user
     public User deleteUser(Long id) {
         return userRepository.findActiveById(id)
                 .map(user -> {
@@ -168,7 +161,6 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
-    // Restore deleted user
     public User restoreUser(Long id) {
         return userRepository.findById(id)
                 .map(user -> {
@@ -181,7 +173,6 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
-    // Permanently delete user (hard delete)
     public void permanentlyDeleteUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
@@ -202,7 +193,6 @@ public class UserService {
         return userRepository.countActiveUsersByRole(role);
     }
 
-    // New methods for status management
     public List<User> getUsersByStatus(User.UserStatus status) {
         return userRepository.findByStatus(status);
     }

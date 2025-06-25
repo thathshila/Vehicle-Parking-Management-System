@@ -13,17 +13,12 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // Existing methods with status filtering
     @Query("SELECT u FROM User u WHERE u.username = :username AND u.status != 'DELETED'")
     Optional<User> findByUsername(@Param("username") String username);
 
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.status != 'DELETED'")
     Optional<User> findByEmail(@Param("email") String email);
 
-    @Query("SELECT u FROM User u WHERE u.id = :id AND u.status != 'DELETED'")
-    Optional<User> findByIdAndNotDeleted(@Param("id") Long id);
-
-    // Override findById to exclude deleted users
     @Query("SELECT u FROM User u WHERE u.id = :id AND u.status != 'DELETED'")
     Optional<User> findActiveById(@Param("id") Long id);
 
@@ -35,9 +30,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u WHERE u.active = :active AND u.status != 'DELETED'")
     List<User> findByActive(@Param("active") boolean active);
-
-    @Query("SELECT u FROM User u WHERE u.role = :role AND u.city = :city AND u.status != 'DELETED'")
-    List<User> findByRoleAndCity(@Param("role") User.UserRole role, @Param("city") String city);
 
     @Query("SELECT COUNT(u) FROM User u WHERE u.role = :role AND u.active = true AND u.status != 'DELETED'")
     Long countActiveUsersByRole(@Param("role") User.UserRole role);
@@ -51,7 +43,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT CASE WHEN COUNT(u) > 0 THEN true ELSE false END FROM User u WHERE u.email = :email AND u.status != 'DELETED'")
     boolean existsByEmail(@Param("email") String email);
 
-    // New methods for status management
     @Query("SELECT u FROM User u WHERE u.status != 'DELETED'")
     List<User> findAllActive();
 
@@ -64,7 +55,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("SELECT u FROM User u WHERE u.status = :status AND u.role = :role")
     List<User> findByStatusAndRole(@Param("status") User.UserStatus status, @Param("role") User.UserRole role);
 
-    // Count methods for statistics
     @Query("SELECT COUNT(u) FROM User u WHERE u.status != 'DELETED'")
     Long countActiveUsers();
 

@@ -54,7 +54,6 @@ public class User {
 
     private boolean active = true;
 
-    // Add status field for soft delete management
     @Enumerated(EnumType.STRING)
     private UserStatus status = UserStatus.ACTIVE;
 
@@ -70,12 +69,11 @@ public class User {
         DRIVER, PARKING_OWNER, ADMIN
     }
 
-    // Add UserStatus enum for better status management
     public enum UserStatus {
-        ACTIVE,      // User is active and can use the system
-        INACTIVE,    // User is temporarily deactivated
-        DELETED,     // User is soft deleted
-        SUSPENDED    // User is suspended (optional for future use)
+        ACTIVE,
+        INACTIVE,
+        DELETED,
+        SUSPENDED
     }
 
     @PrePersist
@@ -89,7 +87,6 @@ public class User {
         updatedAt = LocalDateTime.now();
     }
 
-    // Helper methods for status management
     public boolean isDeleted() {
         return this.status == UserStatus.DELETED;
     }
